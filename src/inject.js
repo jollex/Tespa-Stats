@@ -112,7 +112,7 @@ function displayTimes(player, allTimes) {
 
     let current = player;
     timePairs.forEach(function(pair) {
-        let size = normalize(24, 48, 0, max, pair[1]);
+        let size = normalize(12, 48, 0, max, pair[1]);
         let img = getImgForHero(pair[0], size);
         current.after(img);
         if (!isTeam1(player)) {
