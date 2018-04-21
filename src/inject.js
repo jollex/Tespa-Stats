@@ -28,19 +28,16 @@ function displayStats(battleTags) {
                 if (isTeam1(player)) {
                     team1TotalRank += rank;
                     team1TotalRanked += 1;
+                    updateAverageSR(team1Average, team1TotalRank / team1TotalRanked);
                 } else {
                     team2TotalRank += rank;
                     team2TotalRanked += 1;
+                    updateAverageSR(team2Average, team2TotalRank / team2TotalRanked);
                 }
                 displayRank(player, rank, rankImg);
             }
             if (times) {
                 displayTimes(player, times);
-            }
-            if (team1TotalRanked > 0) {
-                updateAverageSR(team1Average, team1TotalRank / team1TotalRanked);
-            } else if (team2TotalRanked > 0) {
-                updateAverageSR(team2Average, team2TotalRank / team2TotalRanked);
             }
         });
     });
@@ -140,7 +137,7 @@ function getImgForHero(hero) {
 function updateAverageSR(element, averageSR) {
     let currentText = element.text();
     if (currentText != 'Average SR: ') {
-        currentText = currentText.slice(0, 12);
+        currentText = 'Average SR: ';
     }
     element.text(currentText + Math.floor(averageSR));
 }
