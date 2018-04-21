@@ -61,6 +61,10 @@ function addBorder(player) {
     }
 }
 
+function isTeam1(player) {
+    return player.parents("[class*='team1']").length > 0;
+}
+
 function getStats(battleTag, callback) {
     $.ajax({
         dataType: "json",
@@ -91,45 +95,46 @@ function displayRank(player, rank, rankImg) {
     img.height(32);
 }
 
-function displayTimes(player, times) {
-    let timesArray = [];
-    for (key in times) {
-        if (times[key] > 0) {
-            timesArray.push([key == 'soldier76' ? 'soldier-76' : key, times[key]]);
+function displayTimes(player, allTimes) {
+    let timePairs = [];
+    for (key in allTimes) {
+        if (allTimes[key] > 0) {
+            timePairs.push([key == 'soldier76' ? 'soldier-76' : key, allTimes[key]]);
         }
     }
-
-    timesArray.sort(function(pair1, pair2) { return pair2[1] - pair1[1]; });
-    if (timesArray.length > 5) {
-        timesArray = timesArray.slice(0, 5);
+    timePairs.sort(function(pair1, pair2) { return pair2[1] - pair1[1]; });
+    if (timePairs.length > 5) {
+        timePairs = timePairs.slice(0, 5);
     }
 
-    if (isTeam1(player)) {
-        timesArray.forEach(function(pair) {
-            player.after(getImgForHero(pair[0]));
-        });
-    } else {
-        let current = player;
-        timesArray.forEach(function(pair) {
-            let img = getImgForHero(pair[0]);
-            current.after(img);
+    let times = timePairs.map(pair => pair[1]);
+    let max = Math.max.apply(Math, times) // fuck javascript
+
+    let current = player;
+    timePairs.forEach(function(pair) {
+        let size = normalize(24, 48, 0, max, pair[1]);
+        let img = getImgForHero(pair[0], size);
+        current.after(img);
+        if (!isTeam1(player)) {
             current = img;
-        });
-    }
+        }
+    });
 }
 
-function isTeam1(player) {
-    return player.parents("[class*='team1']").length > 0;
+function normalize(min, max, imin, imax, i) {
+    let x = i * (max - min) / (imax - imin);
+    return x + min;
 }
 
-function getImgForHero(hero) {
+function getImgForHero(hero, size) {
     let img = $('<img></img>');
     img.attr('src', 'https://blzgdapipro-a.akamaihd.net/hero/' + hero + '/icon-portrait.png');
-    img.width(32);
-    img.height(32);
+    img.width(size);
+    img.height(size);
     img.css({
         'border': '1px solid #471b9f',
-        'border-radius': '2px'
+        'border-radius': '2px',
+        'vertical-align': 'bottom'
     });
     return img;
 }
