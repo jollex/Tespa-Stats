@@ -1,0 +1,16 @@
+{
+  "name": "Tespa Stats",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Add player stats to Tespa Overwatch match pages.",
+  "content_scripts": [
+  	{
+  		"matches": ["*://compete.tespa.org/tournament/*/match/*"],
+  		"js": ["lib/jquery-3.3.1.min.js", "src/inject.js"],
+  		"run_at": "document_end"
+  	}
+  ],
+  "permissions": [
+    "https://owapi.net/api/v3/u/*/blob"
+  ]
+}
