@@ -37,6 +37,7 @@ function displayStats(battleTags) {
                     team2TotalRanked += 1;
                     updateAverageSR(team2Average, team2TotalRank / team2TotalRanked);
                 }
+                displayRank(player, rank);
             }
 
             setPlayerIcon(player, rankImg);
