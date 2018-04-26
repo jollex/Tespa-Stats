@@ -79,12 +79,15 @@ function getStats(battleTag, callback) {
         url: 'https://owapi.net/api/v3/u/' + battleTag + '/blob',
         success: function(response) {
             console.log(response);
+            let image = response.us.stats.competitive.overall_stats.tier_image;
+            if (!response.us.stats.competitive.overall_stats.tier_image) {
+                image = response.us.stats.competitive.overall_stats.avatar;
+            }
             callback(response.us.stats.competitive.overall_stats.comprank,
-                     response.us.stats.competitive.overall_stats.tier_image,
+                     image,
                      response.us.heroes.playtime.competitive);
         },
-        error: function(obj) {
-            console.log(obj.status);
+        error: function() {
             setPlayerIcon(getPlayer(battleTag), chrome.extension.getURL('../img/error.png'));
         }
     });
