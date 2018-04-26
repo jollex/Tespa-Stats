@@ -9,7 +9,13 @@ This is a simple chrome extension that adds Overwatch statistics to Tespa match 
 3. Select 'Load Unpacked' and choose the Tespa Stats folder.
 4. Navigate to any Tespa match page (e.g. `https://compete.tespa.org/tournament/*/match/*`).
 
-The statistics may take some time to load in.
+The statistics may take some time to load in. While they load, you will see a loading icon:
+
+![Example Loading](img/example-loading.png)
+
+Sometimes the API we use will return an error because of too many requests. If that happens, you will see an error icon:
+
+![Example Error](img/example-error.png)
 
 ### Sources
 Overwatch statistics are retrieved from [owapi.net](https://owapi.net/).

@@ -12,5 +12,6 @@
   ],
   "permissions": [
     "https://owapi.net/api/v3/u/*/blob"
-  ]
+  ],
+  "web_accessible_resources": ["img/error.png", "img/loading.gif"]
 }

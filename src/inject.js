@@ -8,8 +8,11 @@ $(window).bind("load", function() {
 // - team: String, either 1, 2, or nothing for both teams
 function getBattleTags(team) {
     team = team || '';
-    let spans = $(".match-detail__players [class*='match-detail__players_team" + team + "'] p span:contains('#')");
-    return spans.map(function(i, span) { return $.trim($(span).text().replace(/#/g, '-')); });
+    let spans = $(".match-detail__players [class*='match-detail__players_team"
+                  + team + "'] p span:contains('#')");
+    return spans.map(function(i, span) {
+        return $.trim($(span).text().replace(/#/g, '-'));
+    });
 }
 
 function displayStats(battleTags) {
@@ -19,9 +22,9 @@ function displayStats(battleTags) {
     let team2TotalRank = 0, team2TotalRanked = 0;
 
     battleTags.map(function(i, battleTag) {
-        let battleTagNoNumbers = battleTag.split('-')[0];
-        let player = $(".match-detail__players .no-margin:contains('" + battleTagNoNumbers + "')");
+        let player = getPlayer(battleTag);
         addBorder(player);
+        setPlayerIcon(player, chrome.extension.getURL('../img/loading.gif'));
 
         getStats(battleTag, function(rank, rankImg, times) {
             if (rank) {
@@ -48,13 +51,18 @@ function displayStats(battleTags) {
     addBorder(team2Average);
 }
 
+function getPlayer(battleTag) {
+    let battleTagNoNumbers = battleTag.split('-')[0];
+    return $(".match-detail__players .no-margin:contains('" + battleTagNoNumbers + "')");
+}
+
 function addBorder(player) {
     player.wrap('<div class="player-stats"></div>');
     if (!player.parent().is(':last-child')) {
         let div = $('<div></div>');
         div.css({
             'border-bottom': '1px solid #6b67a7',
-            'padding-bottom': '10px',
+            'padding': '10px 0px',
             'display': 'inline-block'
         });
         player.wrap(div);
@@ -76,7 +84,8 @@ function getStats(battleTag, callback) {
                      response.us.heroes.playtime.competitive);
         },
         error: function(obj) {
-            console.log(obj.responseTest);
+            console.log(obj.status);
+            setPlayerIcon(getPlayer(battleTag), chrome.extension.getURL('../img/error.png'));
         }
     });
 }
@@ -89,10 +98,14 @@ function displayRank(player, rank, rankImg) {
         span.text(rank + ' | ' + span.text());
     }
 
+    setPlayerIcon(player, rankImg);
+}
+
+function setPlayerIcon(player, imgSrc, width = 32, height = 32) {
     let img = player.find('img');
-    img.attr('src', rankImg);
-    img.width(32);
-    img.height(32);
+    img.attr('src', imgSrc);
+    img.width(width);
+    img.height(height)
 }
 
 function displayTimes(player, allTimes) {
@@ -128,7 +141,8 @@ function normalize(min, max, imin, imax, i) {
 
 function getImgForHero(hero, size) {
     let img = $('<img></img>');
-    img.attr('src', 'https://blzgdapipro-a.akamaihd.net/hero/' + hero + '/icon-portrait.png');
+    img.attr('src',
+             'https://blzgdapipro-a.akamaihd.net/hero/' + hero + '/icon-portrait.png');
     img.width(size);
     img.height(size);
     img.css({
@@ -140,9 +154,5 @@ function getImgForHero(hero, size) {
 }
 
 function updateAverageSR(element, averageSR) {
-    let currentText = element.text();
-    if (currentText != 'Average SR: ') {
-        currentText = 'Average SR: ';
-    }
-    element.text(currentText + Math.floor(averageSR));
+    element.text('Average SR: ' + Math.floor(averageSR));
 }
