@@ -37,8 +37,10 @@ function displayStats(battleTags) {
                     team2TotalRanked += 1;
                     updateAverageSR(team2Average, team2TotalRank / team2TotalRanked);
                 }
-                displayRank(player, rank, rankImg);
             }
+
+            setPlayerIcon(player, rankImg);
+            
             if (times) {
                 displayTimes(player, times);
             }
@@ -80,9 +82,10 @@ function getStats(battleTag, callback) {
         success: function(response) {
             console.log(response);
             let image = response.us.stats.competitive.overall_stats.tier_image;
-            if (!response.us.stats.competitive.overall_stats.tier_image) {
-                image = response.us.stats.competitive.overall_stats.avatar;
+            if (typeof image == 'undefined') {
+                image = response.us.stats.competitive.overall_stats.rank_image;
             }
+            console.log(image);
             callback(response.us.stats.competitive.overall_stats.comprank,
                      image,
                      response.us.heroes.playtime.competitive);
@@ -93,15 +96,13 @@ function getStats(battleTag, callback) {
     });
 }
 
-function displayRank(player, rank, rankImg) {
+function displayRank(player, rank) {
     let span = player.find('span');
     if (isTeam1(player)) {
         span.text(span.text() + ' | ' + rank);
     } else {
         span.text(rank + ' | ' + span.text());
     }
-
-    setPlayerIcon(player, rankImg);
 }
 
 function setPlayerIcon(player, imgSrc, width = 32, height = 32) {
